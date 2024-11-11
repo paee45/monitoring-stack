@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"  # Map port 3000 on the host to port 3000 in the container
+    volumes:
+      - grafana_data:/var/lib/grafana  # Persist Grafana data
+      - ~/grafana_ssl/grafana.crt:/etc/grafana/grafana.crt  # Mount the SSL certificate
+      - ~/grafana_ssl/grafana.key:/etc/grafana/grafana.key  # Mount the SSL key
+    environment:
+      - GF_SERVER_PROTOCOL=https
+      - GF_SERVER_HTTP_PORT=3000
+      - GF_SERVER_CERT_FILE=/etc/grafana/grafana.crt
+      - GF_SERVER_CERT_KEY=/etc/grafana/grafana.key
+
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"  # Map port 9090 on the host to port 9090 in the container
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml  # Mount Prometheus config
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml  # Specify the configuration file
+
+  node_exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"  # Map port 9100 on the host to port 9100 in the container
+
+volumes:
+  grafana_data:  # Named volume for Grafana data

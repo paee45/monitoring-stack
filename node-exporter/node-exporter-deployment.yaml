@@ -1,0 +1,44 @@
+# This configuration deploys Node Exporter as a DaemonSet and exposes it via a LoadBalancer service
+# in the "monitoring" namespace.
+
+# create the DaemonSet to install node-exporter to all node in the cluster
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-exporter  # Name of the DaemonSet
+  namespace: monitoring  # Namespace where the DaemonSet is deployed
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter  # Match labels for the pods managed by this DaemonSet
+  template:
+    metadata:
+      labels:
+        app: node-exporter  # Labels for the pods to identify them
+    spec:
+      containers:
+      - name: node-exporter  # Name of the container running Node Exporter
+        image: prom/node-exporter:latest  # Docker image for Node Exporter
+        ports:
+        - containerPort: 9100  # Port on which the container listens for metrics
+          name: metrics  # Name for the metrics port
+
+
+# This configuration defines a Kubernetes Service for the Node Exporter.
+# The Service is set to expose the Node Exporter metrics, allowing external
+# access via a LoadBalancer. It specifies the service's metadata, port details,
+# and selector for routing traffic to the corresponding Node Exporter pods.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-exporter  # Name of the service to access Node Exporter
+  namespace: monitoring  # Namespace where the service is deployed
+spec:
+  ports:
+    - name: metrics  # Name for the metrics port
+      port: 9100  # Port exposed by the service
+      targetPort: 9100  # Port where Node Exporter listens
+  selector:
+    app: node-exporter  # Selector to route traffic to the Node Exporter pods
+  type: LoadBalancer  # Type of service to allow external access

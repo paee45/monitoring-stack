@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"  # Map port 3000 on the host to port 3000 in the container
+    volumes:
+      - grafana_data:/var/lib/grafana  # Persist Grafana data
+      - ./grafana_ssl/grafana.crt:/etc/grafana/grafana.crt  # SSL cert for Grafana
+      - ./grafana_ssl/grafana.key:/etc/grafana/grafana.key  # SSL key for Grafana
+    environment:
+      - GF_SERVER_CERT_FILE=/etc/grafana/grafana.crt
+      - GF_SERVER_CERT_KEY=/etc/grafana/grafana.key
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./grafana_ssl/grafana.crt:/etc/prometheus/prometheus.crt  # Reuse SSL cert
+      - ./grafana_ssl/grafana.key:/etc/prometheus/prometheus.key  # Reuse SSL key
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.listen-address=:9090'
+      - '--web.enable-lifecycle'
+      - '--web.config.file=/etc/prometheus/web.yml'
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "9091:443"  # Expose port 443 for HTTPS
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/htpasswd:/etc/nginx/htpasswd
+      - ./grafana_ssl/grafana.crt:/etc/nginx/prometheus.crt  # Reuse SSL cert
+      - ./grafana_ssl/grafana.key:/etc/nginx/prometheus.key  # Reuse SSL key
+
+volumes:
+  grafana_data:  # Named volume for Grafana data
