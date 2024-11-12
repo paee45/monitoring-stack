@@ -13,3 +13,11 @@ scrape_configs:
   - job_name: 'k8s-cluster'  # Changed job name to k8scluster
     static_configs:
       - targets: ['10.0.0.137:9100', '10.0.0.138:9100', '10.0.0.140:9100']  # Add targets for k8s cluster
+
+  - job_name: 'kube-state-metrics'  # get metric for kube-state-metrics from k3s cluster
+    static_configs:
+      - targets: 
+          - '10.0.0.138:30080'
+          - '10.0.0.140:30080'
+          - '10.0.0.137:30080'
+          # Add more node IPs as needed
