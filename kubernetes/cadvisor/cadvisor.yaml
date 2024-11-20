@@ -55,7 +55,7 @@ spec:
     app: cadvisor
   type: NodePort
   ports:
-  - port: 8080
-    targetPort: 8080
-    protocol: TCP
-    nodePort: 30090  # Change this if needed
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      nodePort: 30090  # Change this if needed
