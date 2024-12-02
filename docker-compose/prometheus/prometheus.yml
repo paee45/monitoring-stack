@@ -1,5 +1,7 @@
 global:
   scrape_interval: 15s  # Set the scrape interval
+  storage:
+    retention: 2mon  # Set the retention period to 2 months
 
 scrape_configs:
   - job_name: 'node'
@@ -10,9 +12,13 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']  # Target for Prometheus itself
 
-  - job_name: 'k8s-cluster'  # node metrics from k3s cluster via node_exporter
+  - job_name: 'k3s-cluster'  # node metrics from k3s cluster via node_exporter
     static_configs:
-      - targets: ['10.0.0.137:9100', '10.0.0.138:9100', '10.0.0.140:9100']  # Add targets for k8s cluster
+      - targets: 
+        - '10.0.0.137:9100'
+        - '10.0.0.138:9100'
+        - '10.0.0.140:9100'  
+        # Add targets for k8s cluster
 
   - job_name: 'kube-state-metrics'  # get metric for kube-state-metrics from k3s cluster [use nodeport]
     static_configs:
@@ -25,7 +31,9 @@ scrape_configs:
   - job_name: 'cadvisor'  # get metrics from cAdvisor
     static_configs:
       - targets: 
-          - '10.0.0.138:8080'
-          - '10.0.0.140:8080'
-          - '10.0.0.137:8080'
+          - '10.0.0.138:30090'
+          - '10.0.0.140:30090'
+          - '10.0.0.137:30090'
           # Add more node IPs as needed
+
+          

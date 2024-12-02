@@ -18,13 +18,15 @@ spec:
         ports:
         - containerPort: 8080
           protocol: TCP
+        securityContext:
+          readOnlyRootFilesystem: false
         volumeMounts:
         - name: rootfs
           mountPath: /rootfs
           readOnly: true
         - name: var-run
           mountPath: /var/run
-          readOnly: true
+          readOnly: false
         - name: sys
           mountPath: /sys
           readOnly: true
