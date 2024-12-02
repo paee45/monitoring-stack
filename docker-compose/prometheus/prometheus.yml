@@ -1,7 +1,7 @@
 global:
   scrape_interval: 15s  # Set the scrape interval
   storage:
-    retention: 2mon  # Set the retention period to 2 months
+    retention: 5d  # Set the retention period to 5 days# Set the retention period to 2 months
 
 scrape_configs:
   - job_name: 'node'
