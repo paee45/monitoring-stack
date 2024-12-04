@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"  # Map port 9090 on the host to port 9090 in the container
+    volumes:
+      - prometheus_data:/var/lib/prometheus  # Persist Prometheus data
+      - /home/ec2-user/prometheus_ssl/prometheus.crt:/etc/prometheus/prometheus.crt  # Mount the SSL certificate
+      - /home/ec2-user/prometheus_ssl/prometheus.key:/etc/prometheus/prometheus.key  # Mount the SSL key
+      - /home/ec2-user/monitoring-stack/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml  # Mount Prometheus config
+      - /home/ec2-user/monitoring-stack/prometheus/web-config.yml:/etc/prometheus/web-config.yml  # Mount web config
+
+    environment:
+      - PROMETHEUS_WEB_TLS_CERT_FILE=/etc/prometheus/prometheus.crt
+      - PROMETHEUS_WEB_TLS_KEY_FILE=/etc/prometheus/prometheus.key
+
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'  # Specify the configuration file
+      - '--storage.tsdb.retention.time=5d'  # Set retention time to 5 days
+      - '--web.config.file=/etc/prometheus/web-config.yml'  # Specify the web config file
+
+volumes:
+  prometheus_data:  # Named volume for Prometheus data
