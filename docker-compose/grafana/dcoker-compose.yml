@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"  # Map port 3000 on the host to port 3000 in the container
+    volumes:
+      - grafana_data:/var/lib/grafana  # Persist Grafana data
+      - /home/ec2-user/grafana_ssl/grafana.crt:/etc/grafana/grafana.crt  # Mount the SSL certificate
+      - /home/ec2-user/grafana_ssl/grafana.key:/etc/grafana/grafana.key  # Mount the SSL key
+    environment:
+      - GF_SERVER_PROTOCOL=https
+      - GF_SERVER_HTTP_PORT=3000
+      - GF_DASHBOARDS_DEFAULT_REFRESH=5m
+      - GF_SERVER_CERT_FILE=/etc/grafana/grafana.crt
+      - GF_SERVER_CERT_KEY=/etc/grafana/grafana.key
+
+volumes:
+  grafana_data:  # Named volume for Grafana data
