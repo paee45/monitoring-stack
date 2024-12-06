@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  node_exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"  # Map port 9100 on the host to port 9100 in the container
+    volumes:
+      - node_exporter_data:/var/lib/node_exporter  # Persist Node Exporter data
+
+volumes:
+  node_exporter_data:  # Named volume for Node Exporter data
