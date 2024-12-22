@@ -21,8 +21,9 @@ services:
 
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'  # Specify the configuration file
-      - '--storage.tsdb.retention.time=5d'  # Set retention time to 5 days
+      - '--storage.tsdb.retention.time=30d'  # Set retention time to 30 days
       - '--web.config.file=/etc/prometheus/web-config.yml'  # Specify the web config file
 
 volumes:
   prometheus_data:  # Named volume for Prometheus data
+    external: true
