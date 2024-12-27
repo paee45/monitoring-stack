@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
 
   prometheus:
@@ -25,5 +23,6 @@ services:
       - '--web.config.file=/etc/prometheus/web-config.yml'  # Specify the web config file
 
 volumes:
-  prometheus_data:  # Named volume for Prometheus data
+  prometheus_data:
+    name: monitoring-stack_prometheus_data
     external: true
