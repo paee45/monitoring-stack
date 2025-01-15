@@ -7,8 +7,15 @@ kubeStateMetrics:
 
 nginxIngressMetrics:
   service:
+    name: ingress-nginx-controller-admission-nodeport
+    namespace: ingress-nginx
     type: NodePort
+    port: 10254
+    targetPort: 10254
     nodePort: 30100
+  selector:
+    name: ingress-nginx
+    component: controller
 
 nodeExporter:
   image: prom/node-exporter:latest
