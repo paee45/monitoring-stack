@@ -1,0 +1,29 @@
+kubeStateMetrics:
+  replicas: 1
+  image: k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.0.0
+  service:
+    type: NodePort
+    nodePort: 30080
+
+nginxIngressMetrics:
+  service:
+    type: NodePort
+    nodePort: 30100
+
+nodeExporter:
+  image: prom/node-exporter:latest
+  service:
+    type: LoadBalancer
+
+redisExporter:
+  replicas: 1
+  image: oliver006/redis_exporter:latest
+  service:
+    type: NodePort
+    nodePort: 30110
+
+cadvisor:
+  image: gcr.io/cadvisor/cadvisor:latest
+  service:
+    type: NodePort
+    nodePort: 30090
