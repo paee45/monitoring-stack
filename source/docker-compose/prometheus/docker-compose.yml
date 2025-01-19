@@ -1,9 +1,11 @@
+version: '3.7'
+
 services:
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus
     container_name: prometheus
-    restart: unless-stopped
+    restart: always
     ports:
       - "9090:9090"  # Map port 9090 on the host to port 9090 in the container
     volumes:
@@ -21,6 +23,14 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'  # Specify the configuration file
       - '--storage.tsdb.retention.time=30d'  # Set retention time to 30 days
       - '--web.config.file=/etc/prometheus/web-config.yml'  # Specify the web config file
+
+    deploy:
+      resources:
+        limits:
+          memory: 1g  # Limit to 1GB of memory
+          cpus: '1.0'  # Limit to 1 CPU core in total
+        reservations:
+          cpus: '0.5'  # Reserve 0.5 CPU cores
 
 volumes:
   prometheus_data:
