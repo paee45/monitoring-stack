@@ -1,14 +1,13 @@
-# This YAML file defines a Kubernetes Service for the nginx-ingress controller.
-# The Service is of type NodePort, which exposes the Service on each Node's IP at a static port (30100 in this case).
-# The Service listens on port 10254 and forwards traffic to the same port on the target Pods.
-# The selector ensures that the Service targets Pods with the labels app.kubernetes.io/name=ingress-nginx and app.kubernetes.io/component=controller.
-# This setup is typically used to expose the nginx-ingress controller metrics endpoint externally.
-
 apiVersion: v1
 kind: Service
 metadata:
   name: ingress-nginx-controller-admission-nodeport
   namespace: ingress-nginx
+  annotations:
+    meta.helm.sh/release-name: monitoring-stack
+    meta.helm.sh/release-namespace: default
+  labels:
+    app.kubernetes.io/managed-by: Helm
 spec:
   type: NodePort
   ports:
